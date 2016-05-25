@@ -1,5 +1,5 @@
 import Html exposing (..)
-import Html.App exposing (..)
+import Html.App as Html
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Http
@@ -16,13 +16,15 @@ import Task
 
 
 -- MAIN
-main = main.program
-    {
-       init = init "cats"
-     , view = view
-     , update = update
-     , subscriptions = subscriptions
+main =
+  Html.program
+    { init = init "cats"
+    , view = view
+    , update = update
+    , subscriptions = subscriptions
     }
+
+
 
 -- MODEL
 type alias Model = 
@@ -33,14 +35,15 @@ type alias Model =
 
 -- INIT 
 init : String -> (Model, Cmd Msg)
-init = 
+init topic = 
     ( Model topic "waiting.gif"
     , getRandomGif topic
     )
 
 
 -- UPDATE
-type Msg = MorePlease
+type Msg = 
+           MorePlease
          | FetchSucceed String
          | FetchFail Http.Error
 
@@ -48,7 +51,7 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update action model = 
     case action of
         MorePlease ->
-            (model, Cmd.none)
+            (model, getRandomGif model.topic)
 
         FetchSucceed newUrl ->
             (Model  model.topic newUrl, Cmd.none)
@@ -62,8 +65,9 @@ view : Model -> Html Msg
 view model = 
     div []
         [ h2 [] [text model.topic]
+        , button [ onClick MorePlease ] [ text "More Please!" ]
+        , br [] []
         , img [src model.gifUrl] []
-        , button [onClick MorePlease] [text "more please"]
         ]
 
 
@@ -85,4 +89,3 @@ getRandomGif topic =
 decodeGifUrl : Json.Decoder String
 decodeGifUrl = 
     Json.at ["data", "image_url"] Json.string
-
