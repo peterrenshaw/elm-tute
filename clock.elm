@@ -40,12 +40,26 @@ update action model =
     case action of 
         Tick newTime ->
             (newTime, Cmd.none)
+         
+
+-- SUBSCRIPTIONS
+subscription : Model -> Sub Msg
+subscription model = 
+    Time every second Tick
 
 
--- VIEW
+-- VIEWS
+view : Model -> HTML Msg
+view model = 
+    let
+        angle = (Time.inMinutes model)
+        handX = toString (50 + 40 * cos angle)
+        handY = toString (50 + 40 * sin angle)
+    in
+        Svg [ viewBox "0 0 100 100", width "300px" ]
+            [ circle [cx "50", y1 "50", r "45" fill "#0B79CE"][]
+             , line [x1 "50", x2 handX, y2 handY stroke "#23963"][]
 
-
--- SUBCRIPTIONS
 
 
 -- FUNCS
