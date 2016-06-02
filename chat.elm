@@ -2,7 +2,7 @@ import Html exposing (..)
 import Html.App as Html
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Websocket
+import WebSocket
 
 
 -- #======
@@ -45,13 +45,13 @@ type Msg
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
-update msg {input, messags} = 
+update msg {input, messages} = 
     case msg of 
         Input newInput ->
             (Model newInput messages, Cmd.none)
 
         Send ->
-            (Model "" messages, Websocket.send "ws://echo.websocket.org" input)
+            (Model "" messages, WebSocket.send "ws://echo.websocket.org" input)
 
         NewMessage str ->
             (Model input (str :: messages), Cmd.none)
@@ -60,7 +60,7 @@ update msg {input, messags} =
 -- SUBSCRIPTIONS
 subscriptions : Model -> Sub Msg
 subscriptions model = 
-    Websocket.listen "ws://echo.websocket.org" NewMessage
+    WebSocket.listen "ws://echo.websocket.org" NewMessage
 
 
 -- VIEW
